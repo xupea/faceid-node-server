@@ -11,9 +11,9 @@ function handleRedirect(req, res) {
       "Content-Type": "application/json"
     }
   }).then(function(result) {
-    console.log("signature for face id : " + result.data.signature);
+    const signature = result.data.data.signature;
     const objSign = {
-      sign: result.data.signature,
+      sign: signature,
       sign_version: "hmac_sha1",
       return_url: "https://www.baidu.com",
       notify_url: "https://www.baidu.com",
@@ -41,16 +41,16 @@ function handleRedirect(req, res) {
   //     liveness_type: "video_number"
   //   };
 
-  axios({
-    method: "post",
-    url: "https://openapi.faceid.com/lite_ocr/v1/get_biz_token",
-    data: objSign
-  }).then(function(result) {
-    console.log(result.data);
-    const biz_token = result.data.biz_token;
-    console.log("https://openapi.faceid.com/lite_ocr/v1/do/" + biz_token);
-    res.redirect("https://openapi.faceid.com/lite_ocr/v1/do/" + biz_token);
-  });
+  //   axios({
+  //     method: "post",
+  //     url: "https://openapi.faceid.com/lite_ocr/v1/get_biz_token",
+  //     data: objSign
+  //   }).then(function(result) {
+  //     console.log(result.data);
+  //     const biz_token = result.data.biz_token;
+  //     console.log("https://openapi.faceid.com/lite_ocr/v1/do/" + biz_token);
+  //     res.redirect("https://openapi.faceid.com/lite_ocr/v1/do/" + biz_token);
+  //   });
 }
 
 app.get("*", handleRedirect);
