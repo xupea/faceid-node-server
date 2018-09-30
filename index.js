@@ -1,7 +1,15 @@
 const express = require("express");
 const app = express();
-
+const bodyParser = require("body-parser");
 const axios = require("axios");
+
+app.use(
+  bodyParser.urlencoded({
+    extended: false
+  })
+);
+
+app.use(bodyParser.json());
 
 function handleRedirect(req, res) {
   axios({
@@ -16,7 +24,7 @@ function handleRedirect(req, res) {
       sign: signature,
       sign_version: "hmac_sha1",
       return_url: "https://www.baidu.com",
-      notify_url: "https://www.qq.com",
+      notify_url: "https://faceid-node-server.herokuapp.com",
       capture_image: 0
     };
     axios({
@@ -54,6 +62,13 @@ function handleRedirect(req, res) {
 }
 
 app.get("*", handleRedirect);
+
+function handlePost(req, res) {
+  console.log('biz_token from post : ' + req.body.biz_token);
+  console.log('error from post : ' + req.body.error;)
+}
+
+app.post("*", handlePost);
 
 const port = process.env.PORT || 5000;
 
