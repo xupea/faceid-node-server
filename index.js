@@ -23,7 +23,7 @@ function handleRedirect(req, res) {
     const objSign = {
       sign: signature,
       sign_version: "hmac_sha1",
-      return_url: "https://www.baidu.com",
+      return_url: "https://faceid-node-server.herokuapp.com/html",
       notify_url: "https://faceid-node-server.herokuapp.com",
       capture_image: 0
     };
@@ -61,7 +61,12 @@ function handleRedirect(req, res) {
   //   });
 }
 
-app.get("*", handleRedirect);
+app.get("/", handleRedirect);
+
+app.get("/html", function(req, res) {
+  console.log("req.query : " + req.query);
+  res.sendFile("index.html");
+});
 
 function handlePost(req, res) {
   console.log(req.body);
