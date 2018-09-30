@@ -64,7 +64,28 @@ function handleRedirect(req, res) {
 app.get("/", handleRedirect);
 
 app.get("/html", function(req, res) {
-  console.log(req.query);
+  const biz_token = req.query.biz_token;
+
+  axios({
+    method: "get",
+    url: "http://120.79.193.99:5000/user_account/v1/user/user_face_sign",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }).then(function(result) {
+    const sign = result.data.data.signature;
+    const sign_version = "hmac_sha1";
+    const need_image = 1;
+
+    axios({
+      method: "get",
+      url: `https://openapi.faceid.com/lite_ocr/v1/get_result?sign=${sign}&sign_version=${sign_version}&biz_token=${biz_token}&need_image=${need_image}`
+    }).then(function(result) {
+      console.log(result);
+    });
+  });
+
+  // console.log(req.query.biz_token);
   res.sendFile(__dirname + "/index.html");
 });
 
