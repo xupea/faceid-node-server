@@ -16,7 +16,7 @@ function handleRedirect(req, res) {
       sign: signature,
       sign_version: "hmac_sha1",
       return_url: "https://www.baidu.com",
-      notify_url: "https://www.baidu.com",
+      notify_url: "https://www.qq.com",
       capture_image: 0
     };
     axios({
