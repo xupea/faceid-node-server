@@ -55,6 +55,6 @@ function handleRedirect(req, res) {
 
 app.get("*", handleRedirect);
 
-const port = 5000;
+const port = process.env.PORT || 5000;
 
-app.listen(port);
+app.listen(port, () => console.log("host on " + port));
