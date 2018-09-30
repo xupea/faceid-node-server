@@ -77,6 +77,8 @@ app.get("/html", function(req, res) {
     const sign_version = "hmac_sha1";
     const need_image = 1;
 
+    console.log("sign from /html : " + sign);
+
     axios({
       method: "get",
       url: `https://openapi.faceid.com/lite_ocr/v1/get_result?sign=${sign}&sign_version=${sign_version}&biz_token=${biz_token}&need_image=${need_image}`
