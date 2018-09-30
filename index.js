@@ -55,6 +55,6 @@ function handleRedirect(req, res) {
 
 app.get("*", handleRedirect);
 
-const port = 3230;
+const port = 5000;
 
 app.listen(port);
