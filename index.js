@@ -64,8 +64,8 @@ function handleRedirect(req, res) {
 app.get("/", handleRedirect);
 
 app.get("/html", function(req, res) {
-  console.log("req.query : " + req.query);
-  res.sendFile("index.html");
+  console.log(req.query);
+  res.sendFile(__dirname + "/index.html");
 });
 
 function handlePost(req, res) {
