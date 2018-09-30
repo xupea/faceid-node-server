@@ -64,8 +64,8 @@ function handleRedirect(req, res) {
 app.get("*", handleRedirect);
 
 function handlePost(req, res) {
-  console.log('biz_token from post : ' + req.body.biz_token);
-  console.log('error from post : ' + req.body.error;)
+  console.log("biz_token from post : " + req.body.biz_token);
+  console.log("error from post : " + req.body.error);
 }
 
 app.post("*", handlePost);
