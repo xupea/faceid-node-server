@@ -18,8 +18,8 @@ function handleRedirect(req, res) {
     headers: {
       "Content-Type": "application/json"
     }
-  })
-    .then(function(result) {
+  }).then(
+    function(result) {
       const signature = result.data.data.signature;
       const objSign = {
         sign: signature,
@@ -32,27 +32,29 @@ function handleRedirect(req, res) {
         method: "post",
         url: "https://openapi.faceid.com/lite_ocr/v1/get_biz_token",
         data: objSign
-      })
-        .then(function(result) {
+      }).then(
+        function(result) {
           console.log("biz_token for face id : " + result.data.biz_token);
           const biz_token = result.data.biz_token;
           res.redirect(
             "https://openapi.faceid.com/lite_ocr/v1/do/" + biz_token
           );
-        })
-        .error(function(msg) {
+        },
+        function(msg) {
           console.log(
             "Got error when post https://openapi.faceid.com/lite_ocr/v1/get_biz_token : " +
               msg
           );
-        });
-    })
-    .error(function(msg) {
+        }
+      );
+    },
+    function(msg) {
       console.log(
         "Got error when get http://120.79.193.99:5000/user_account/v1/user/user_face_sign : " +
           msg
       );
-    });
+    }
+  );
   //   const objSign2 = {
   //     sign:
   //       "G1r9GFAxqpQQ2EUhRT8p3lO/fFhhPXJuRWdlZlBoTmNLTkYxbGtwT1llREJGQ25uNXQ4d2tIJmI9MTUzODY1MTEyNyZjPTE1MzgyOTExMjcmZD0xNjQ2MjcwMzg=",
