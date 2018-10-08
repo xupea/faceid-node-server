@@ -83,7 +83,7 @@ app.get("/html", function(req, res) {
       url: `https://openapi.faceid.com/lite_ocr/v1/get_result?sign=${sign}&sign_version=${sign_version}&biz_token=${biz_token}&need_image=${need_image}`
     }).then(function(result) {
       console.log(result);
-      res.sendFile(__dirname + "/index.html");
+      res.sendFile(__dirname + "/index.html?abc=100");
     });
   });
 });

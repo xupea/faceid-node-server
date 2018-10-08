@@ -3,8 +3,15 @@
 <body>
     Hello World
     <script>
-        var url = window.location.url;
-        document.getElementById('contentId').innerHTML = url;
+        function getParameterByName(name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                results = regex.exec(location.search);
+            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+
+        var url = window.location.href;
+        document.getElementById('contentId').innerHTML = location.search;
     </script>
     <div id="contentId"></div>
 </body>
