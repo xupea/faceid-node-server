@@ -90,25 +90,33 @@ app.get("/return", function(req, res) {
     headers: {
       "Content-Type": "application/json"
     }
-  }).then(function(result) {
-    const sign = result.data.data.signature;
-    const sign_version = "hmac_sha1";
-    const need_image = 1;
+  }).then(
+    function(result) {
+      const sign = result.data.data.signature;
+      const sign_version = "hmac_sha1";
+      const need_image = 1;
 
-    // check the result info
-    axios({
-      method: "get",
-      url: `https://openapi.faceid.com/lite_ocr/v1/get_result?sign=${sign}&sign_version=${sign_version}&biz_token=${biz_token}&need_image=${need_image}`
-    }).then(function(result) {
-      console.log(result);
-      const status = result.data.result_message;
-      if (status === "USER_CANCEL") {
-        res.sendFile(__dirname + "/index.html");
-      } else {
-        res.sendFile(__dirname + "/index_success.html");
-      }
-    });
-  });
+      // check the result info
+      axios({
+        method: "get",
+        url: `https://openapi.faceid.com/lite_ocr/v1/get_result?sign=${sign}&sign_version=${sign_version}&biz_token=${biz_token}&need_image=${need_image}`
+      }).then(function(result) {
+        console.log(result);
+        const status = result.data.result_message;
+        if (status === "USER_CANCEL") {
+          res.sendFile(__dirname + "/index.html");
+        } else {
+          res.sendFile(__dirname + "/index_success.html");
+        }
+      });
+    },
+    function(msg) {
+      console.log(
+        "Got error when get https://openapi.faceid.com/lite_ocr/v1/get_result : " +
+          msg
+      );
+    }
+  );
 });
 
 function handlePost(req, res) {
