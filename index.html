@@ -1,17 +1,9 @@
 <html>
 
 <body>
-    Hello World
     <script>
-        function getParameterByName(name) {
-            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-                results = regex.exec(location.search);
-            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-        }
-
         var url = window.location.href;
-        document.getElementById('contentId').innerHTML = location.search;
+        document.getElementById('contentId').innerHTML = "验证失败 ： 用户取消验证";
     </script>
     <div id="contentId"></div>
 </body>

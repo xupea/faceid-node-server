@@ -23,8 +23,8 @@ function handleRedirect(req, res) {
     const objSign = {
       sign: signature,
       sign_version: "hmac_sha1",
-      return_url: "https://faceid-node-server.herokuapp.com/html",
-      notify_url: "https://faceid-node-server.herokuapp.com",
+      return_url: "https://faceid-node-server.herokuapp.com/return",
+      notify_url: "https://faceid-node-server.herokuapp.com/notify",
       capture_image: 0
     };
     axios({
@@ -63,7 +63,7 @@ function handleRedirect(req, res) {
 
 app.get("/", handleRedirect);
 
-app.get("/html", function(req, res) {
+app.get("/return", function(req, res) {
   const biz_token = req.query.biz_token;
 
   axios({
@@ -83,19 +83,21 @@ app.get("/html", function(req, res) {
       url: `https://openapi.faceid.com/lite_ocr/v1/get_result?sign=${sign}&sign_version=${sign_version}&biz_token=${biz_token}&need_image=${need_image}`
     }).then(function(result) {
       console.log(result);
-      res.sendFile(__dirname + "/index.html?abc=100");
+      res.sendFile(__dirname + "/index.html");
     });
   });
 });
 
 function handlePost(req, res) {
-  console.log(req.body);
-  console.log("biz_token from post : " + req.body.data.biz_token);
-  console.log("error from post : " + req.body.data.error);
+  console.log("post body : " + req.body);
+  console.log(
+    "biz_token from post for notify url : " + req.body.data.biz_token
+  );
+  console.log("error from post for notify url : " + req.body.data.error);
   res.end("yes");
 }
 
-app.post("*", handlePost);
+app.post("/notify", handlePost);
 
 const port = process.env.PORT || 5000;
 
