@@ -100,19 +100,27 @@ app.get("/return", function(req, res) {
       axios({
         method: "get",
         url: `https://openapi.faceid.com/lite_ocr/v1/get_result?sign=${sign}&sign_version=${sign_version}&biz_token=${biz_token}&need_image=${need_image}`
-      }).then(function(result) {
-        console.log(result);
-        const status = result.data.result_message;
-        if (status === "USER_CANCEL") {
-          res.sendFile(__dirname + "/index.html");
-        } else {
-          res.sendFile(__dirname + "/index_success.html");
+      }).then(
+        function(result) {
+          // console.log(result);
+          const status = result.data.result_message;
+          if (status === "USER_CANCEL") {
+            res.sendFile(__dirname + "/index.html");
+          } else {
+            res.sendFile(__dirname + "/index_success.html");
+          }
+        },
+        function(msg) {
+          console.log(
+            "Got error when get https://openapi.faceid.com/lite_ocr/v1/get_result : " +
+              msg
+          );
         }
-      });
+      );
     },
     function(msg) {
       console.log(
-        "Got error when get https://openapi.faceid.com/lite_ocr/v1/get_result : " +
+        "Got error when get http://120.79.193.99:5000/user_account/v1/user/user_face_sign : " +
           msg
       );
     }
