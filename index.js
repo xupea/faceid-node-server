@@ -17,6 +17,7 @@ const biz_token_url = "https://openapi.faceid.com/lite/v1/get_biz_token";
 const redirect_url = "https://openapi.faceid.com/lite/v1/do/";
 const return_url = "https://faceid-node-server.herokuapp.com/return";
 const notify_url = "https://faceid-node-server.herokuapp.com/notify";
+const get_result_url = "https://openapi.faceid.com/lite/v1/get_result";
 
 /* 
  * 1. get signature first
@@ -90,7 +91,7 @@ function handleReturn(req, res) {
       // check the result info
       axios({
         method: "get",
-        url: `https://openapi.faceid.com/lite_ocr/v1/get_result?sign=${sign}&sign_version=${sign_version}&biz_token=${biz_token}&need_image=${need_image}`
+        url: `${get_result_url}?sign=${sign}&sign_version=${sign_version}&biz_token=${biz_token}&need_image=${need_image}`
       }).then(
         function(result) {
           // console.log(result);
@@ -102,10 +103,7 @@ function handleReturn(req, res) {
           }
         },
         function(msg) {
-          console.log(
-            "Got error when get https://openapi.faceid.com/lite_ocr/v1/get_result : " +
-              msg
-          );
+          console.log(`Got error when get ${get_result_url} : ` + msg);
         }
       );
     },
