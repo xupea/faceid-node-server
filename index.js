@@ -24,7 +24,7 @@ const notify_url = "https://faceid-node-server.herokuapp.com/notify";
  * 3. get final url and redirect
 */
 function handleFaceID(req, res) {
-  console.log("sending get request to " + return_url);
+  console.log("sending get request to " + signature_url);
   axios({
     method: "get",
     url: signature_url,
@@ -34,6 +34,7 @@ function handleFaceID(req, res) {
   }).then(
     function(result) {
       const signature = result.data.data.signature;
+      console.log("signature : " + signature);
       const objSign = {
         sign: signature,
         sign_version: "hmac_sha1",
