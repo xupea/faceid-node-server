@@ -15,8 +15,10 @@ const signature_url =
   "http://120.79.193.99:5000/user_account/v1/user/user_face_sign";
 const biz_token_url = "https://openapi.faceid.com/lite/v1/get_biz_token";
 const redirect_url = "https://openapi.faceid.com/lite/v1/do/";
-const return_url = "https://faceid-node-server.herokuapp.com/return";
-const notify_url = "https://faceid-node-server.herokuapp.com/notify";
+// const return_url = "https://faceid-node-server.herokuapp.com/return";
+// const notify_url = "https://faceid-node-server.herokuapp.com/notify";
+const return_url = "http://120.79.193.99:9022/return";
+const notify_url = "http://120.79.193.99:9022/notify";
 const get_result_url = "https://openapi.faceid.com/lite/v1/get_result";
 
 /* 
@@ -94,7 +96,6 @@ function handleReturn(req, res) {
         url: `${get_result_url}?sign=${sign}&sign_version=${sign_version}&biz_token=${biz_token}&need_image=${need_image}`
       }).then(
         function(result) {
-          // console.log(result);
           const status = result.data.result_message;
           if (status === "USER_CANCEL") {
             res.sendFile(__dirname + "/index.html");
@@ -134,6 +135,6 @@ app.get("/return", handleReturn);
 app.post("/notify", handleNotify);
 
 // please change the port accordingly
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 10002;
 
 app.listen(port, () => console.log("face id server hosts on " + port));
