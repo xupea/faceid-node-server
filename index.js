@@ -41,6 +41,7 @@ function handleFaceID(req, res) {
         return_url: return_url,
         notify_url: notify_url,
         comparison_type: 1,
+        liveness_type: "video_number",
         group: 1
       };
       console.log("sending post request to " + biz_token_url);
