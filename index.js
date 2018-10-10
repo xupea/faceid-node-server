@@ -24,6 +24,7 @@ const notify_url = "https://faceid-node-server.herokuapp.com/notify";
  * 3. get final url and redirect
 */
 function handleFaceID(req, res) {
+  console.log("sending get request to " + return_url);
   axios({
     method: "get",
     url: signature_url,
@@ -41,6 +42,7 @@ function handleFaceID(req, res) {
         comparison_type: 1,
         group: 1
       };
+      console.log("sending post request to " + biz_token_url);
       axios({
         method: "post",
         url: biz_token_url,
@@ -53,7 +55,7 @@ function handleFaceID(req, res) {
         },
         function(msg) {
           console.log(
-            "Got error when post request to https://openapi.faceid.com/lite/v1/do/biz_token : " +
+            "Got error when post request to https://openapi.faceid.com/lite/v1/get_biz_token : " +
               msg
           );
         }
