@@ -20,16 +20,16 @@ const redirect_url = "https://openapi.faceid.com/lite/v1/do/";
 const ocr_redirect_url = "https://openapi.faceid.com/lite_ocr/v1/do/";
 
 // for heroku
-// const return_url = "https://faceid-node-server.herokuapp.com/return";
-// const notify_url = "https://faceid-node-server.herokuapp.com/notify";
-// const ocr_return_url = "https://faceid-node-server.herokuapp.com/return_ocr";
-// const ocr_notify_url = "https://faceid-node-server.herokuapp.com/notify_ocr";
+const return_url = "https://faceid-node-server.herokuapp.com/return";
+const notify_url = "https://faceid-node-server.herokuapp.com/notify";
+const ocr_return_url = "https://faceid-node-server.herokuapp.com/return_ocr";
+const ocr_notify_url = "https://faceid-node-server.herokuapp.com/notify_ocr";
 
 // for ali cloud
-const return_url = "http://120.79.193.99:9022/return";
-const notify_url = "http://120.79.193.99:9022/notify";
-const ocr_return_url = "http://120.79.193.99:9022/return_ocr";
-const ocr_notify_url = "http://120.79.193.99:9022/notify_ocr";
+// const return_url = "http://120.79.193.99:9022/return";
+// const notify_url = "http://120.79.193.99:9022/notify";
+// const ocr_return_url = "http://120.79.193.99:9022/return_ocr";
+// const ocr_notify_url = "http://120.79.193.99:9022/notify_ocr";
 
 // for local testing
 // const return_url = "http://localhost:11000/return";
@@ -162,6 +162,7 @@ function handleReturn(req, res) {
       const need_image = 1;
 
       // check the result info
+      console.log("GET request for get_result : " + get_result_url);
       axios({
         method: "get",
         url: `${get_result_url}?sign=${sign}&sign_version=${sign_version}&biz_token=${biz_token}&need_image=${need_image}`
