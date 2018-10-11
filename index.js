@@ -20,16 +20,16 @@ const redirect_url = "https://openapi.faceid.com/lite/v1/do/";
 const ocr_redirect_url = "https://openapi.faceid.com/lite_ocr/v1/do/";
 
 // for heroku
-const return_url = "https://faceid-node-server.herokuapp.com/return";
-const notify_url = "https://faceid-node-server.herokuapp.com/notify";
-const ocr_return_url = "https://faceid-node-server.herokuapp.com/return_ocr";
-const ocr_notify_url = "https://faceid-node-server.herokuapp.com/notify_ocr";
+// const return_url = "https://faceid-node-server.herokuapp.com/return";
+// const notify_url = "https://faceid-node-server.herokuapp.com/notify";
+// const ocr_return_url = "https://faceid-node-server.herokuapp.com/return_ocr";
+// const ocr_notify_url = "https://faceid-node-server.herokuapp.com/notify_ocr";
 
 // for ali cloud
-// const return_url = "http://120.79.193.99:9022/return";
-// const notify_url = "http://120.79.193.99:9022/notify";
-// const ocr_return_url = "http://120.79.193.99:9022/return_ocr";
-// const ocr_notify_url = "http://120.79.193.99:9022/notify_ocr";
+const return_url = "http://120.79.193.99:9022/return";
+const notify_url = "http://120.79.193.99:9022/notify";
+const ocr_return_url = "http://120.79.193.99:9022/return_ocr";
+const ocr_notify_url = "http://120.79.193.99:9022/notify_ocr";
 
 // for local testing
 // const return_url = "http://localhost:11000/return";
@@ -123,22 +123,18 @@ function handleChineseFaceID(req, res) {
         method: "post",
         url: biz_token_url,
         data: objSign
-      })
-        .then(
-          function(result) {
-            console.log("biz_token for face id : " + result.data.biz_token);
-            const biz_token = result.data.biz_token;
-            res.redirect(redirect_url + biz_token);
-          },
-          function(msg) {
-            res.render("genernal_error", {
-              error_message: msg.response.data.error
-            });
-          }
-        )
-        .catch(error => {
-          console.log(error);
-        });
+      }).then(
+        function(result) {
+          console.log("biz_token for face id : " + result.data.biz_token);
+          const biz_token = result.data.biz_token;
+          res.redirect(redirect_url + biz_token);
+        },
+        function(msg) {
+          res.render("genernal_error", {
+            error_message: msg.response.data.error
+          });
+        }
+      );
     },
     function(msg) {
       res.render("genernal_error", {
@@ -186,7 +182,7 @@ function handleReturn(req, res) {
         },
         function(msg) {
           res.render("genernal_error", {
-            error_message: msg
+            error_message: msg.response.data.error
           });
         }
       );
