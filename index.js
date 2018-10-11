@@ -15,10 +15,10 @@ const signature_url =
   "http://120.79.193.99:5000/user_account/v1/user/user_face_sign";
 const biz_token_url = "https://openapi.faceid.com/lite/v1/get_biz_token";
 const redirect_url = "https://openapi.faceid.com/lite/v1/do/";
-// const return_url = "https://faceid-node-server.herokuapp.com/return";
-// const notify_url = "https://faceid-node-server.herokuapp.com/notify";
-const return_url = "http://120.79.193.99:9022/return";
-const notify_url = "http://120.79.193.99:9022/notify";
+const return_url = "https://faceid-node-server.herokuapp.com/return";
+const notify_url = "https://faceid-node-server.herokuapp.com/notify";
+// const return_url = "http://120.79.193.99:9022/return";
+// const notify_url = "http://120.79.193.99:9022/notify";
 const get_result_url = "https://openapi.faceid.com/lite/v1/get_result";
 
 /* 
@@ -26,8 +26,12 @@ const get_result_url = "https://openapi.faceid.com/lite/v1/get_result";
  * 2. get biz token
  * 3. get final url and redirect
 */
-function handleFaceID(req, res) {
+function handleChineseFaceID(req, res) {
   console.log("sending get request to " + signature_url);
+  console.log("idcard_name and idcard_number : ");
+  console.log(req);
+  const idcard_name = "许晓明";
+  const idcard_number = "220702198501074613";
   axios({
     method: "get",
     url: signature_url,
@@ -43,9 +47,12 @@ function handleFaceID(req, res) {
         sign_version: "hmac_sha1",
         return_url: return_url,
         notify_url: notify_url,
-        comparison_type: 1,
+        comparison_type: 0,
         liveness_type: "video_number",
-        group: 1
+        idcard_name,
+        idcard_number,
+        group: 0,
+        image_ref1: {}
       };
       console.log("sending post request to " + biz_token_url);
       axios({
@@ -125,8 +132,14 @@ function handleNotify(req, res) {
   res.end("yes");
 }
 
-// the url for uri of rn webview
-app.get("/faceid", handleFaceID);
+// chinese id verification
+app.get("/faceid_ocr", handleChineseID);
+
+// chinese face id
+app.get("/faceid_chinese", handleChineseFaceID);
+
+// foreigner face image compare
+app.get("/faceid_foreigner", handleForeignerFaceID);
 
 // the url for return_url of faceid
 app.get("/return", handleReturn);
