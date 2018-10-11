@@ -169,8 +169,8 @@ function handleReturn(req, res) {
       }).then(
         function(result) {
           const status = result.data.result_message;
+          console.log(result.data);
           if (status === "USER_CANCEL") {
-            console.log("cancel");
             res.render("faceid_failure", {
               error_message: "用户主动取消了高级验证流程",
               title: "高级验证"
