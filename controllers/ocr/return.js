@@ -24,7 +24,6 @@ router.get("/", function(req, res) {
       }).then(
         function(result) {
           const status = result.data.result_message;
-          console.log(result.data);
           if (status === "USER_CANCEL") {
             res.render("faceid_failure", {
               error_message: "用户主动取消了高级验证流程",
