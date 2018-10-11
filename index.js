@@ -14,14 +14,67 @@ app.use(bodyParser.json());
 const signature_url =
   "http://120.79.193.99:5000/user_account/v1/user/user_face_sign";
 const biz_token_url = "https://openapi.faceid.com/lite/v1/get_biz_token";
+const ocr_biz_token_url =
+  "https://openapi.faceid.com/lite_ocr/v1/get_biz_token";
 const redirect_url = "https://openapi.faceid.com/lite/v1/do/";
-const return_url = "https://faceid-node-server.herokuapp.com/return";
-const notify_url = "https://faceid-node-server.herokuapp.com/notify";
+const ocr_redirect_url = "https://openapi.faceid.com/lite_ocr/v1/do/";
+// const return_url = "https://faceid-node-server.herokuapp.com/return";
+// const notify_url = "https://faceid-node-server.herokuapp.com/notify";
 // const return_url = "http://120.79.193.99:9022/return";
 // const notify_url = "http://120.79.193.99:9022/notify";
-const get_result_url = "https://openapi.faceid.com/lite/v1/get_result";
+const return_url = "http://localhost:11000/return";
+const notify_url = "http://localhost:11000/notify";
+const ocr_return_url = "http://localhost:11000/return_ocr";
+const ocr_notify_url = "http://localhost:11000/notify_ocr";
 
-function handleChineseID(req, res) {}
+const get_result_url = "https://openapi.faceid.com/lite/v1/get_result";
+const ocr_get_result_url = "https://openapi.faceid.com/lite_ocr/v1/get_result";
+
+function handleChineseID(req, res) {
+  console.log("handle chinese id and sending get request to " + signature_url);
+  axios({
+    method: "get",
+    url: signature_url,
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }).then(
+    function(result) {
+      const signature = result.data.data.signature;
+      console.log("signature : " + signature);
+      const objSign = {
+        sign: signature,
+        sign_version: "hmac_sha1",
+        capture_image: 1,
+        return_url: ocr_return_url,
+        notify_url: ocr_notify_url
+      };
+      console.log("sending post request to " + ocr_biz_token_url);
+      axios({
+        method: "post",
+        url: ocr_biz_token_url,
+        data: objSign
+      }).then(
+        function(result) {
+          console.log("biz_token for ocr : " + result.data.biz_token);
+          const biz_token = result.data.biz_token;
+          res.redirect(ocr_redirect_url + biz_token);
+        },
+        function(msg) {
+          res.render("faceid_failure", {
+            error_message: msg,
+            title: "身份认证"
+          });
+        }
+      );
+    },
+    function(msg) {
+      res.render("genernal_error", {
+        error_message: msg
+      });
+    }
+  );
+}
 /* 
  * 1. get signature first
  * 2. get biz token
@@ -29,10 +82,8 @@ function handleChineseID(req, res) {}
 */
 function handleChineseFaceID(req, res) {
   console.log("sending get request to " + signature_url);
-  console.log("idcard_name and idcard_number : ");
-  console.log(req);
-  const idcard_name = "许晓明";
-  const idcard_number = "220702198501074613";
+  const idcard_name = req.query.idcard_name;
+  const idcard_number = req.query.idcard_number;
   axios({
     method: "get",
     url: signature_url,
@@ -53,32 +104,34 @@ function handleChineseFaceID(req, res) {
         idcard_name,
         idcard_number,
         group: 0,
-        image_ref1: {}
+        image_ref1: ""
       };
       console.log("sending post request to " + biz_token_url);
       axios({
         method: "post",
         url: biz_token_url,
         data: objSign
-      }).then(
-        function(result) {
-          console.log("biz_token for face id : " + result.data.biz_token);
-          const biz_token = result.data.biz_token;
-          res.redirect(redirect_url + biz_token);
-        },
-        function(msg) {
-          console.log(
-            "Got error when post request to https://openapi.faceid.com/lite/v1/get_biz_token : " +
-              msg
-          );
-        }
-      );
+      })
+        .then(
+          function(result) {
+            console.log("biz_token for face id : " + result.data.biz_token);
+            const biz_token = result.data.biz_token;
+            res.redirect(redirect_url + biz_token);
+          },
+          function(msg) {
+            res.render("genernal_error", {
+              error_message: msg.response.data.error
+            });
+          }
+        )
+        .catch(error => {
+          console.log(error);
+        });
     },
     function(msg) {
-      console.log(
-        "Got error when get request from http://120.79.193.99:5000/user_account/v1/user/user_face_sign : " +
-          msg
-      );
+      res.render("genernal_error", {
+        error_message: msg
+      });
     }
   );
 }
@@ -108,21 +161,77 @@ function handleReturn(req, res) {
         function(result) {
           const status = result.data.result_message;
           if (status === "USER_CANCEL") {
-            res.sendFile(__dirname + "/index.html");
+            console.log("cancel");
+            res.render("faceid_failure", {
+              error_message: "用户主动取消了高级验证流程",
+              title: "高级验证"
+            });
           } else {
-            res.sendFile(__dirname + "/index_success.html");
+            res.render("faceid_success", {
+              title: "高级认证"
+            });
           }
         },
         function(msg) {
-          console.log(`Got error when get ${get_result_url} : ` + msg);
+          res.render("genernal_error", {
+            error_message: msg
+          });
         }
       );
     },
     function(msg) {
-      console.log(
-        "Got error when get http://120.79.193.99:5000/user_account/v1/user/user_face_sign : " +
-          msg
+      res.render("genernal_error", {
+        error_message: msg
+      });
+    }
+  );
+}
+
+// handle id verification return url
+function handleReturnOCR(req, res) {
+  const biz_token = req.query.biz_token;
+
+  axios({
+    method: "get",
+    url: signature_url,
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }).then(
+    function(result) {
+      const sign = result.data.data.signature;
+      const sign_version = "hmac_sha1";
+      const need_image = 1;
+
+      // check the result info
+      axios({
+        method: "get",
+        url: `${ocr_get_result_url}?sign=${sign}&sign_version=${sign_version}&biz_token=${biz_token}&need_image=${need_image}`
+      }).then(
+        function(result) {
+          const status = result.data.result_message;
+          if (status === "USER_CANCEL") {
+            res.render("faceid_failure", {
+              error_message: "用户主动取消了验证流程",
+              title: "身份认证"
+            });
+          } else {
+            res.render("faceid_success", {
+              title: "身份认证"
+            });
+          }
+        },
+        function(msg) {
+          res.render("genernal_error", {
+            error_message: msg
+          });
+        }
       );
+    },
+    function(msg) {
+      res.render("genernal_error", {
+        error_message: msg
+      });
     }
   );
 }
@@ -134,6 +243,17 @@ function handleNotify(req, res) {
   console.log("error from post for notify url : " + req.body.data.error);
   res.end("yes");
 }
+
+function handleNotifyOCR(req, res) {
+  console.log(
+    "biz_token from post for notify url : " + req.body.data.biz_token
+  );
+  console.log("error from post for notify url : " + req.body.data.error);
+  res.end("yes");
+}
+
+app.set("views", __dirname + "/views/");
+app.set("view engine", "jade");
 
 // chinese id verification
 app.get("/faceid_ocr", handleChineseID);
@@ -147,10 +267,16 @@ app.get("/faceid_foreigner", handleForeignerFaceID);
 // the url for return_url of faceid
 app.get("/return", handleReturn);
 
+// the url for return_url of faceid
+app.get("/return_ocr", handleReturnOCR);
+
 // the url for notify_url of faceid
 app.post("/notify", handleNotify);
 
+// the url for notify_url of faceid
+app.post("/notify_ocr", handleNotifyOCR);
+
 // please change the port accordingly
-const port = process.env.PORT || 10002;
+const port = process.env.PORT || 11000;
 
 app.listen(port, () => console.log("face id server hosts on " + port));
