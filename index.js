@@ -106,7 +106,6 @@ function handleChineseFaceID(req, res) {
     function(result) {
       const signature = result.data.data.signature;
       console.log("signature : " + signature);
-      console.log(notify_url);
       const objSign = {
         sign: signature,
         sign_version: "hmac_sha1",
