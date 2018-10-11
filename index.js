@@ -21,6 +21,7 @@ const notify_url = "https://faceid-node-server.herokuapp.com/notify";
 // const notify_url = "http://120.79.193.99:9022/notify";
 const get_result_url = "https://openapi.faceid.com/lite/v1/get_result";
 
+function handleChineseID(req, res) {}
 /* 
  * 1. get signature first
  * 2. get biz token
@@ -81,6 +82,8 @@ function handleChineseFaceID(req, res) {
     }
   );
 }
+
+function handleForeignerFaceID(req, res) {}
 
 function handleReturn(req, res) {
   const biz_token = req.query.biz_token;
