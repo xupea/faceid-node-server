@@ -20,10 +20,10 @@ const redirect_url = "https://openapi.faceid.com/lite/v1/do/";
 const ocr_redirect_url = "https://openapi.faceid.com/lite_ocr/v1/do/";
 
 // for heroku
-// const return_url = "https://faceid-node-server.herokuapp.com/return";
-// const notify_url = "https://faceid-node-server.herokuapp.com/notify";
-// const ocr_return_url = "https://faceid-node-server.herokuapp.com/return_ocr";
-// const ocr_notify_url = "https://faceid-node-server.herokuapp.com/notify_ocr";
+const return_url = "https://faceid-node-server.herokuapp.com/return";
+const notify_url = "https://faceid-node-server.herokuapp.com/notify";
+const ocr_return_url = "https://faceid-node-server.herokuapp.com/return_ocr";
+const ocr_notify_url = "https://faceid-node-server.herokuapp.com/notify_ocr";
 
 // for ali cloud
 // const return_url = "http://120.79.193.99:9022/return";
@@ -32,10 +32,10 @@ const ocr_redirect_url = "https://openapi.faceid.com/lite_ocr/v1/do/";
 // const ocr_notify_url = "http://120.79.193.99:9022/notify_ocr";
 
 // for local testing
-const return_url = "http://localhost:11000/return";
-const notify_url = "http://localhost:11000/notify";
-const ocr_return_url = "http://localhost:11000/return_ocr";
-const ocr_notify_url = "http://localhost:11000/notify_ocr";
+// const return_url = "http://localhost:11000/return";
+// const notify_url = "http://localhost:11000/notify";
+// const ocr_return_url = "http://localhost:11000/return_ocr";
+// const ocr_notify_url = "http://localhost:11000/notify_ocr";
 
 const get_result_url = "https://openapi.faceid.com/lite/v1/get_result";
 const ocr_get_result_url = "https://openapi.faceid.com/lite_ocr/v1/get_result";
@@ -104,6 +104,7 @@ function handleChineseFaceID(req, res) {
     function(result) {
       const signature = result.data.data.signature;
       console.log("signature : " + signature);
+      console.log(notify_url);
       const objSign = {
         sign: signature,
         sign_version: "hmac_sha1",
