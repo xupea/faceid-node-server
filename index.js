@@ -20,24 +20,26 @@ const redirect_url = "https://openapi.faceid.com/lite/v1/do/";
 const ocr_redirect_url = "https://openapi.faceid.com/lite_ocr/v1/do/";
 
 // for heroku
-const return_url = "https://faceid-node-server.herokuapp.com/return";
-const notify_url = "https://faceid-node-server.herokuapp.com/notify";
+const faceid_return_url =
+  "https://faceid-node-server.herokuapp.com/return_faceid";
+const faceid_notify_url =
+  "https://faceid-node-server.herokuapp.com/notify_faceid";
 const ocr_return_url = "https://faceid-node-server.herokuapp.com/return_ocr";
 const ocr_notify_url = "https://faceid-node-server.herokuapp.com/notify_ocr";
 
 // for ali cloud
-// const return_url = "http://120.79.193.99:9022/return";
-// const notify_url = "http://120.79.193.99:9022/notify";
+// const faceid_return_url = "http://120.79.193.99:9022/return_faceid";
+// const faceid_notify_url = "http://120.79.193.99:9022/notify_faceid";
 // const ocr_return_url = "http://120.79.193.99:9022/return_ocr";
 // const ocr_notify_url = "http://120.79.193.99:9022/notify_ocr";
 
 // for local testing
-// const return_url = "http://localhost:11000/return";
-// const notify_url = "http://localhost:11000/notify";
+// const faceid_return_url = "http://localhost:11000/return_faceid";
+// const faceid_notify_url = "http://localhost:11000/notify_faceid";
 // const ocr_return_url = "http://localhost:11000/return_ocr";
 // const ocr_notify_url = "http://localhost:11000/notify_ocr";
 
-const get_result_url = "https://openapi.faceid.com/lite/v1/get_result";
+const faceid_get_result_url = "https://openapi.faceid.com/lite/v1/get_result";
 const ocr_get_result_url = "https://openapi.faceid.com/lite_ocr/v1/get_result";
 
 function handleChineseID(req, res) {
@@ -55,7 +57,7 @@ function handleChineseID(req, res) {
       const objSign = {
         sign: signature,
         sign_version: "hmac_sha1",
-        capture_image: 1,
+        capture_image: 0,
         return_url: ocr_return_url,
         notify_url: ocr_notify_url
       };
@@ -108,8 +110,8 @@ function handleChineseFaceID(req, res) {
       const objSign = {
         sign: signature,
         sign_version: "hmac_sha1",
-        return_url: return_url,
-        notify_url: notify_url,
+        return_url: faceid_return_url,
+        notify_url: faceid_notify_url,
         comparison_type: 0,
         liveness_type: "video_number",
         idcard_name,
@@ -146,7 +148,7 @@ function handleChineseFaceID(req, res) {
 
 function handleForeignerFaceID(req, res) {}
 
-function handleReturn(req, res) {
+function handleReturnFaceID(req, res) {
   const biz_token = req.query.biz_token;
 
   axios({
@@ -162,10 +164,10 @@ function handleReturn(req, res) {
       const need_image = 1;
 
       // check the result info
-      console.log("GET request for get_result : " + get_result_url);
+      console.log("GET request for get_result : " + faceid_get_result_url);
       axios({
         method: "get",
-        url: `${get_result_url}?sign=${sign}&sign_version=${sign_version}&biz_token=${biz_token}&need_image=${need_image}`
+        url: `${faceid_get_result_url}?sign=${sign}&sign_version=${sign_version}&biz_token=${biz_token}&need_image=${need_image}`
       }).then(
         function(result) {
           const status = result.data.result_message;
@@ -221,7 +223,7 @@ function handleReturnOCR(req, res) {
           const status = result.data.result_message;
           if (status === "USER_CANCEL") {
             res.render("faceid_failure", {
-              error_message: "用户主动取消了验证流程",
+              error_message: "用户主动取消了身份验证流程",
               title: "身份认证"
             });
           } else {
@@ -245,7 +247,7 @@ function handleReturnOCR(req, res) {
   );
 }
 
-function handleNotify(req, res) {
+function handleNotifyFaceID(req, res) {
   console.log(
     "biz_token from post for notify url : " + req.body.data.biz_token
   );
@@ -274,13 +276,13 @@ app.get("/faceid_chinese", handleChineseFaceID);
 app.get("/faceid_foreigner", handleForeignerFaceID);
 
 // the url for return_url of faceid
-app.get("/return", handleReturn);
+app.get("/return_faceid", handleReturnFaceID);
 
 // the url for return_url of faceid
 app.get("/return_ocr", handleReturnOCR);
 
 // the url for notify_url of faceid
-app.post("/notify", handleNotify);
+app.post("/notify_faceid", handleNotifyFaceID);
 
 // the url for notify_url of faceid
 app.post("/notify_ocr", handleNotifyOCR);
